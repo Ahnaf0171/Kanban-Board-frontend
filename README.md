@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kanban Board Frontend
 
-## Getting Started
+A full-stack Kanban Board application frontend, built with **Next.js 14 (App Router)**. Supports task management with drag-and-drop reordering, image uploads with polygon annotation, and tag-based organization backed by a Django REST Framework API.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 🔐 Secure authentication via **httpOnly cookies**, enforced through a Next.js middleware/proxy layer
+- 📋 Drag-and-drop Kanban board (Boards → Columns → Task Cards)
+- 🖼️ Image upload (Cloudinary) with polygon annotation canvas
+- 🏷️ Tagging system for tasks
+- ⚡ Server-first data fetching with **React Query**, lightweight client state with **Zustand**
+- 🧩 Atomic design component architecture (atoms → molecules → organisms)
+
+## Tech Stack
+
+Next.js 14 · TypeScript · Tailwind + shadcn/ui · React Query · Zustand · Cloudinary
+
+## 📁 Project Structure
+
+```
+src/
+├── proxy.ts                # Reads httpOnly cookie, redirects unauthenticated users
+├── app/                     # Routes (App Router) — login, registration, dashboard
+│   └── api/proxy/[...path]  # Server-side proxy to Django backend
+├── components/
+│   ├── atoms/                # Base UI primitives
+│   ├── molecules/             # Composed UI units
+│   └── organisms/              # Feature level components (Board, Canvas, etc.)
+├── lib/
+│   ├── services/               # API service layer (auth, tasks, images, annotations, tags)
+│   └── actions/                # Server actions (auth cookie handling)
+├── store/                    # Zustand stores (UI-only state)
+├── hooks/                    # Custom React Query hooks
+└── types/                    # Shared TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗️ Architecture Notes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Auth flow**: Login sets an httpOnly cookie via a server action. `proxy.ts` (middleware) guards protected routes and redirects unauthenticated users. All backend calls are routed through `app/api/proxy/[...path]` so the cookie never touches client JS.
+- **Component design**: Strict atomic hierarchy atoms are dumb/reusable, organisms hold feature logic, and pages compose organisms.
+- **Data layer**: React Query owns server state (tasks, images, annotations); Zustand only manages ephemeral UI state (e.g. drag state, selected tool).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Set up environment variables
+cp .env.example .env.local
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run the dev server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+App runs at `http://localhost:3000`.
 
-## Deploy on Vercel
+## 🔑 Environment Variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+NEXT_PUBLIC_API_BASE_URL=https://kanban-board-tuuo.onrender.com
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 Scripts
+
+| Command         | Description              |
+| --------------- | ------------------------ |
+| `npm run dev`   | Start development server |
+| `npm run build` | Production build         |
+| `npm run start` | Start production server  |
+| `npm run lint`  | Run ESLint               |
+
+## 🔗 Backend
+
+This frontend expects a Django REST Framework backend exposing auth, tasks, images, annotations, and tags endpoints. See backend repo for setup instructions.
