@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, type FieldErrors } from "react-hook-form";
+import { useForm, Controller, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   taskCreateSchema,
@@ -13,6 +13,7 @@ import { useTaskUIStore } from "@/store/taskUIStore";
 import { Modal } from "@/components/molecules/Modal";
 import { FormField } from "@/components/molecules/FormField";
 import { Button } from "@/components/atoms/Button";
+import { Select } from "@/components/atoms/Select";
 import { TASK_STATUS_ORDER, TASK_PRIORITY } from "@/lib/constants";
 import { getErrorMessage } from "@/lib/utils";
 import type { Task } from "@/types/types";
@@ -33,6 +34,7 @@ export function TaskModal({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<TaskFormValues>({
     resolver: zodResolver(schema),
@@ -102,26 +104,36 @@ export function TaskModal({
         />
 
         <div className="grid grid-cols-2 gap-3">
-          <select
-            {...register("status")}
-            className="rounded-md border bg-background p-2 text-sm"
-          >
-            {TASK_STATUS_ORDER.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-          <select
-            {...register("priority")}
-            className="rounded-md border bg-background p-2 text-sm"
-          >
-            {Object.keys(TASK_PRIORITY).map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={field.onChange}
+                options={TASK_STATUS_ORDER.map((s) => ({
+                  value: s,
+                  label: s,
+                }))}
+                error={errors.status?.message}
+              />
+            )}
+          />
+          <Controller
+            name="priority"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={field.onChange}
+                options={Object.keys(TASK_PRIORITY).map((p) => ({
+                  value: p,
+                  label: p,
+                }))}
+                error={errors.priority?.message}
+              />
+            )}
+          />
         </div>
 
         {serverError && (
