@@ -43,8 +43,15 @@ export function TaskModal({
     },
   });
 
-  const onSubmit = async (data: TaskFormValues) => {
+  const onSubmit = async (formValues: TaskFormValues) => {
     setServerError("");
+
+    const data = {
+      ...formValues,
+      description: formValues.description ?? undefined,
+      tags: formValues.tags ?? undefined,
+    };
+
     try {
       task
         ? await update.mutateAsync({ id: task.id, data })
