@@ -7,8 +7,10 @@ import type {
 
 export function useAnnotations(imageId: number) {
   const queryClient = useQueryClient();
-  const invalidate = () =>
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["images", imageId] });
+    queryClient.invalidateQueries({ queryKey: ["images"], exact: true });
+  };
 
   const create = useMutation({
     mutationFn: (data: CreateAnnotationInput) =>

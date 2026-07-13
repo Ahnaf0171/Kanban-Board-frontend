@@ -30,14 +30,27 @@ async function forward(
   });
 }
 
+let refreshPromise: Promise<{ access: string; refresh: string } | null> | null =
+  null;
+
 async function refreshAccessToken(refreshToken: string) {
-  const res = await fetch(`${API_BASE_URL}/api/auth/login/refresh/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh: refreshToken }),
-  });
-  if (!res.ok) return null;
-  return (await res.json()) as { access: string; refresh: string };
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    const res = await fetch(`${API_BASE_URL}/api/auth/login/refresh/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as { access: string; refresh: string };
+  })();
+
+  try {
+    return await refreshPromise;
+  } finally {
+    refreshPromise = null;
+  }
 }
 
 function withAuthCookies(res: NextResponse, access: string, refresh: string) {

@@ -23,7 +23,7 @@ export function LoginForm() {
     setServerError("");
     const { error } = await loginAction(data);
     if (error) return setServerError(error);
-    router.push("/tasks");
+    router.replace("/tasks");
   };
 
   return (

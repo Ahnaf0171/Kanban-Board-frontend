@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { imagesService } from "@/lib/services/images";
 import type { ImageAsset, ReorderImageInput } from "@/types/annotation";
+import { PaginatedResponse } from "@/types/common";
 
 let tempIdCounter = 0;
 
@@ -66,8 +67,13 @@ export function useImages() {
 }
 
 export function useImage(id: number) {
+  const queryClient = useQueryClient();
   return useSuspenseQuery({
     queryKey: ["images", id],
     queryFn: () => imagesService.retrieve(id),
+    initialData: () =>
+      queryClient
+        .getQueryData<PaginatedResponse<ImageAsset>>(["images"])
+        ?.results.find((img) => img.id === id),
   });
 }

@@ -23,7 +23,7 @@ export function RegisterForm() {
     setServerError("");
     const { error } = await registerAction(data);
     if (error) return setServerError(error);
-    router.push("/tasks");
+    router.replace("/tasks");
   };
 
   return (
