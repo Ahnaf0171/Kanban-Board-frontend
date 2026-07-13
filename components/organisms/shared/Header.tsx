@@ -17,7 +17,7 @@ export async function Header({ user }: HeaderProps) {
       <Link href="/" className="text-sm font-semibold text-ink">
         Kanban <span className="text-signal"> Board</span>
       </Link>
-      {!currentUser && <HeaderNav />}
+      <HeaderNav />
       {currentUser ? (
         <Link
           href="/tasks"

@@ -50,6 +50,7 @@ export async function loginAction(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    signal: AbortSignal.timeout(45_000),
   });
 
   const body = await res.json();
@@ -81,6 +82,7 @@ export async function registerAction(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    signal: AbortSignal.timeout(45_000),
   });
 
   if (!res.ok) {
