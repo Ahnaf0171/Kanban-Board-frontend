@@ -2,8 +2,8 @@ import Link from "next/link";
 import { getCurrentUser, logoutAction } from "@/lib/actions/auth";
 import { Avatar } from "@/components/atoms/Avatar";
 import { Button } from "@/components/atoms/Button";
-import { HeaderNav } from "./HeaderNav";
-import type { User } from "@/types/types";
+import { HeaderNav } from "@/components/organisms/marketing/HeaderNav";
+import type { User } from "@/types/auth";
 
 interface HeaderProps {
   user?: User;

@@ -1,5 +1,5 @@
 import { DateSelector } from "@/components/molecules/DateSelector";
-import { Board } from "@/components/organisms/Board";
+import { Board } from "@/components/organisms/task/Board";
 
 export default function TasksPage() {
   return (

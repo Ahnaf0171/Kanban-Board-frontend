@@ -10,7 +10,7 @@ import { TASK_CARD_COLOR, PRIORITY_COLOR } from "@/lib/constants";
 import { formatDate, cn } from "@/lib/utils";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskUIStore } from "@/store/taskUIStore";
-import type { Task } from "@/types/types";
+import type { Task } from "@/types/task";
 
 export function TaskCard({
   task,

@@ -16,7 +16,7 @@ import { Button } from "@/components/atoms/Button";
 import { Select } from "@/components/atoms/Select";
 import { TASK_STATUS_ORDER, TASK_PRIORITY } from "@/lib/constants";
 import { getErrorMessage } from "@/lib/utils";
-import type { Task } from "@/types/types";
+import type { Task } from "@/types/task";
 import { todayISODate } from "@/lib/utils";
 
 export function TaskModal({

@@ -3,7 +3,7 @@ import { annotationsService } from "@/lib/services/annotations";
 import type {
   CreateAnnotationInput,
   UpdateAnnotationInput,
-} from "@/types/types";
+} from "@/types/annotation";
 
 export function useAnnotations(imageId: number) {
   const queryClient = useQueryClient();

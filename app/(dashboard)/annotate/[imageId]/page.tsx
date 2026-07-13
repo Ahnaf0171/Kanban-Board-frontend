@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { Canvas } from "@/components/organisms/Canvas";
-import { AnnotationToolbar } from "@/components/organisms/AnnotationToolbar";
-import { AnnotationList } from "@/components/organisms/AnnotationList";
-import { ImageNavButtons } from "@/components/organisms/ImageNavButtons";
+import { Canvas } from "@/components/organisms/annotation/Canvas";
+import { AnnotationToolbar } from "@/components/organisms/annotation/AnnotationToolbar";
+import { AnnotationList } from "@/components/organisms/annotation/AnnotationList";
+import { ImageNavButtons } from "@/components/organisms/annotation/ImageNavButtons";
 
 export default async function ImageAnnotatePage({
   params,

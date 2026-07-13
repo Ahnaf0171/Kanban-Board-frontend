@@ -1,6 +1,6 @@
-import { UploadButton } from "@/components/organisms/UploadButton";
-import { ImageSlider } from "@/components/organisms/ImageSlider";
-import { EmptyState } from "@/components/organisms/EmptyState";
+import { UploadButton } from "@/components/organisms/shared/UploadButton";
+import { ImageSlider } from "@/components/organisms/annotation/ImageSlider";
+import { EmptyState } from "@/components/organisms/shared/EmptyState";
 
 export default function AnnotatePage() {
   return (

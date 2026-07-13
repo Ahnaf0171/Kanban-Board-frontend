@@ -1,11 +1,11 @@
 import { api } from "@/lib/api";
 import type {
-  PaginatedResponse,
   Task,
   CreateTaskInput,
   UpdateTaskInput,
   ReorderTaskInput,
-} from "@/types/types";
+} from "@/types/task";
+import type { PaginatedResponse } from "@/types/common";
 
 export const tasksService = {
   list: (dueDate?: string) =>

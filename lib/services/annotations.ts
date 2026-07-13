@@ -3,7 +3,7 @@ import type {
   Annotation,
   CreateAnnotationInput,
   UpdateAnnotationInput,
-} from "@/types/types";
+} from "@/types/annotation";
 
 export const annotationsService = {
   create: (data: CreateAnnotationInput) =>

@@ -11,15 +11,15 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { Plus } from "lucide-react";
-import { Column } from "./Column";
-import { TaskModal } from "./TaskModal";
-import { TaskCard } from "./TaskCard";
+import { Column } from "@/components/organisms/task/Column";
+import { TaskModal } from "@/components/organisms/task/TaskModal";
+import { TaskCard } from "@/components/organisms/task/TaskCard";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskUIStore } from "@/store/taskUIStore";
 import { TASK_STATUS_ORDER } from "@/lib/constants";
 import { Button } from "@/components/atoms/Button";
 import { Spinner } from "@/components/atoms/Spinner";
-import type { Task, TaskStatus } from "@/types/types";
+import type { Task, TaskStatus } from "@/types/task";
 
 export function Board() {
   const { selectedDate } = useTaskUIStore();

@@ -10,10 +10,10 @@ import {
 import type {
   LoginRequest,
   AuthTokens,
-  ApiErrorResponse,
   RegisterRequest,
   User,
-} from "@/types/types";
+} from "@/types/auth";
+import type { ApiErrorResponse } from "@/types/common";
 
 const cookieOpts = {
   httpOnly: true,

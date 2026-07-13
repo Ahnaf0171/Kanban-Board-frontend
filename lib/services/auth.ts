@@ -4,7 +4,7 @@ import type {
   LoginRequest,
   RegisterRequest,
   AuthTokens,
-} from "@/types/types";
+} from "@/types/auth";
 
 export const authService = {
   register: (data: RegisterRequest) => api.post<User>("/auth/register/", data),

@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
-import type { PaginatedResponse, Tag } from "@/types/types";
+import type { PaginatedResponse } from "@/types/common";
+import type { Tag } from "@/types/task";
 
 export const tagsService = {
   list: () => api.get<PaginatedResponse<Tag>>("/tags/"),

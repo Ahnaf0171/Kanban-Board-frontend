@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Point } from "@/types/types";
+import type { Point } from "@/types/annotation";
 
 interface AnnotationUIState {
   activeImageId: number | null;

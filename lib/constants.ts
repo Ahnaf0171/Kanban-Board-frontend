@@ -1,4 +1,4 @@
-import type { TaskPriority, TaskStatus } from "@/types/types";
+import type { TaskPriority, TaskStatus } from "@/types/task";
 
 export const TASK_STATUS: Record<TaskStatus, string> = {
   todo: "To do",

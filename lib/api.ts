@@ -1,5 +1,5 @@
 import { getErrorMessage } from "@/lib/utils";
-import type { ApiErrorResponse } from "@/types/types";
+import type { ApiErrorResponse } from "@/types/common";
 
 const BASE_URL = "/api/proxy";
 

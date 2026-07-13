@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { imagesService } from "@/lib/services/images";
-import type { ReorderImageInput } from "@/types/types";
+import type { ReorderImageInput } from "@/types/annotation";
 
 export function useImages() {
   const queryClient = useQueryClient();

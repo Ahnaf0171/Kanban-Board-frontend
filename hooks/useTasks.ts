@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { tasksService } from "@/lib/services/tasks";
+import type { PaginatedResponse } from "@/types/common";
 import type {
   CreateTaskInput,
   UpdateTaskInput,
   ReorderTaskInput,
-  PaginatedResponse,
   Task,
-} from "@/types/types";
+} from "@/types/task";
 
 export function useTasks(dueDate?: string | null) {
   const queryClient = useQueryClient();

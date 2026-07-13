@@ -1,4 +1,4 @@
-import { Features } from "@/components/organisms/Features";
+import { Features } from "@/components/organisms/marketing/Features";
 
 export default function FeaturesPage() {
   return <Features />;

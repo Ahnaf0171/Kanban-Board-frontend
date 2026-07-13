@@ -6,7 +6,7 @@ import { useAnnotations } from "@/hooks/useAnnotations";
 import { useAnnotationUIStore } from "@/store/annotationUIStore";
 import { ConfirmDialog } from "@/components/molecules/ConfirmDialog";
 import { Button } from "@/components/atoms/Button";
-import { EmptyState } from "@/components/organisms/EmptyState";
+import { EmptyState } from "@/components/organisms/shared/EmptyState";
 import { cn } from "@/lib/utils";
 
 export function AnnotationList({ imageId }: { imageId: number }) {

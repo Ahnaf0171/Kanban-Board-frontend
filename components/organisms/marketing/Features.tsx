@@ -1,4 +1,3 @@
-// components/organisms/FeaturesSection.tsx
 import { LayoutGrid, MousePointerClick, ImagePlus, Tags } from "lucide-react";
 
 const FEATURES = [

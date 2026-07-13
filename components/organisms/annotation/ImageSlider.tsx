@@ -18,11 +18,11 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useImages } from "@/hooks/useImages";
-import { EmptyState } from "@/components/organisms/EmptyState";
+import { EmptyState } from "@/components/organisms/shared/EmptyState";
 import { Spinner } from "@/components/atoms/Spinner";
 import { ConfirmDialog } from "@/components/molecules/ConfirmDialog";
 import { cn } from "@/lib/utils";
-import type { ImageAsset } from "@/types/types";
+import type { ImageAsset } from "@/types/annotation";
 
 function Thumb({
   image,

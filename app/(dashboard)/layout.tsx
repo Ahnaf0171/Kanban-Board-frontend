@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { API_BASE_URL, ACCESS_TOKEN_COOKIE } from "@/lib/config";
-import { Sidebar } from "@/components/organisms/Sidebar";
-import { Header } from "@/components/organisms/Header";
+import { Sidebar } from "@/components/organisms/shared/Sidebar";
+import { Header } from "@/components/organisms/shared/Header";
 
 export default async function DashboardLayout({
   children,

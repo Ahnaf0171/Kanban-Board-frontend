@@ -5,10 +5,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { TaskCard } from "@/components/organisms/TaskCard";
+import { TaskCard } from "@/components/organisms/task/TaskCard";
 import { TASK_STATUS, COLUMN_COLOR } from "@/lib/constants";
-import { EmptyState } from "@/components/organisms/EmptyState";
-import type { Task, TaskStatus } from "@/types/types";
+import { EmptyState } from "@/components/organisms/shared/EmptyState";
+import type { Task, TaskStatus } from "@/types/task";
 import { cn } from "@/lib/utils";
 
 export function Column({

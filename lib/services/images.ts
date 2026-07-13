@@ -1,9 +1,6 @@
 import { api } from "@/lib/api";
-import type {
-  PaginatedResponse,
-  ImageAsset,
-  ReorderImageInput,
-} from "@/types/types";
+import type { ImageAsset, ReorderImageInput } from "@/types/annotation";
+import type { PaginatedResponse } from "@/types/common";
 
 export const imagesService = {
   list: () => api.get<PaginatedResponse<ImageAsset>>("/images/"),
