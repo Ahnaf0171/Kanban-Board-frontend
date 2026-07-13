@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { imagesService } from "@/lib/services/images";
 import type { ReorderImageInput } from "@/types/annotation";
 
@@ -29,10 +34,9 @@ export function useImages() {
   return { ...query, upload, reorder, remove };
 }
 
-export function useImage(id: number | null) {
-  return useQuery({
+export function useImage(id: number) {
+  return useSuspenseQuery({
     queryKey: ["images", id],
-    queryFn: () => imagesService.retrieve(id as number),
-    enabled: id !== null,
+    queryFn: () => imagesService.retrieve(id),
   });
 }

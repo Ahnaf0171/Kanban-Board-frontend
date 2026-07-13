@@ -6,8 +6,6 @@ import { AnnotationToolbar } from "@/components/organisms/annotation/AnnotationT
 import { AnnotationList } from "@/components/organisms/annotation/AnnotationList";
 import { ImageNavButtons } from "@/components/organisms/annotation/ImageNavButtons";
 
-export const dynamic = "force-dynamic";
-
 export default async function ImageAnnotatePage({
   params,
 }: {
