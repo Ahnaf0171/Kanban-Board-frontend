@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller, type FieldErrors } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   taskCreateSchema,
@@ -27,7 +27,7 @@ export function TaskModal({
   onClose: () => void;
 }) {
   const { selectedDate } = useTaskUIStore();
-  const { create, update, remove } = useTasks(selectedDate);
+  const { create, update } = useTasks(selectedDate);
   const schema = task ? taskEditSchema : taskCreateSchema;
   const [serverError, setServerError] = useState("");
 
@@ -64,25 +64,6 @@ export function TaskModal({
     }
   };
 
-  const onInvalid = (formErrors: FieldErrors<TaskFormValues>) => {
-    console.log("Validation failed:", formErrors);
-    const message = Object.values(formErrors)
-      .map((e) => e?.message)
-      .filter(Boolean)
-      .join(", ");
-    setServerError(message || "Please check the form fields");
-  };
-
-  const handleDelete = async () => {
-    if (!task) return;
-    try {
-      await remove.mutateAsync(task.id);
-      onClose();
-    } catch (err) {
-      setServerError(getErrorMessage(err));
-    }
-  };
-
   return (
     <Modal
       open
@@ -90,7 +71,7 @@ export function TaskModal({
       title={task ? "Edit task" : "New task"}
       dismissible={false}
     >
-      <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           label="Title"
           {...register("title")}
@@ -99,6 +80,7 @@ export function TaskModal({
         <FormField
           label="Due date"
           type="date"
+          min={task ? undefined : todayISODate()}
           {...register("due_date")}
           error={errors.due_date?.message}
         />
@@ -140,13 +122,8 @@ export function TaskModal({
           <p className="text-sm text-destructive">{serverError}</p>
         )}
 
-        <div className="flex justify-between pt-2">
-          {task && (
-            <Button type="button" variant="destructive" onClick={handleDelete}>
-              Delete
-            </Button>
-          )}
-          <Button type="submit" disabled={isSubmitting} className="ml-auto">
+        <div className="flex justify-end pt-2">
+          <Button type="submit" disabled={isSubmitting}>
             {task ? "Save" : "Create"}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { CanvasSkeleton } from "@/components/atoms/CanvasSkeleton";
@@ -12,9 +12,13 @@ const MIN_ZOOM = 1;
 const MAX_ZOOM = 3;
 
 export function Canvas({ imageId }: { imageId: number }) {
+  const [prevImageId, setPrevImageId] = useState(imageId);
   const [zoom, setZoom] = useState(MIN_ZOOM);
 
-  useEffect(() => setZoom(MIN_ZOOM), [imageId]);
+  if (imageId !== prevImageId) {
+    setPrevImageId(imageId);
+    setZoom(MIN_ZOOM);
+  }
 
   return (
     <div className="space-y-2">

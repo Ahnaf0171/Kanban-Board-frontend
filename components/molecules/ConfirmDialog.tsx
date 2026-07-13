@@ -77,7 +77,7 @@ export function ConfirmDialog({
           </Button>
           <Button
             variant={variant}
-            className="flex-1"
+            className="flex-1 border border-red-600 bg-red-600 text-white hover:bg-red-700"
             onClick={onConfirm}
             disabled={isLoading}
           >
