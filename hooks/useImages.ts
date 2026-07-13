@@ -5,7 +5,9 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { imagesService } from "@/lib/services/images";
-import type { ReorderImageInput } from "@/types/annotation";
+import type { ImageAsset, ReorderImageInput } from "@/types/annotation";
+
+let tempIdCounter = 0;
 
 export function useImages() {
   const queryClient = useQueryClient();
@@ -17,7 +19,36 @@ export function useImages() {
 
   const upload = useMutation({
     mutationFn: (file: File) => imagesService.upload(file),
-    onSuccess: invalidate,
+    onMutate: async (file: File) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData(key);
+      const tempId = -++tempIdCounter;
+
+      queryClient.setQueryData(key, (old: any) => {
+        if (!old) return old;
+        const tempImage = {
+          id: tempId,
+          file: URL.createObjectURL(file),
+        } as ImageAsset;
+        return { ...old, results: [...old.results, tempImage] };
+      });
+
+      return { previous, tempId };
+    },
+    onSuccess: (data, _file, context) => {
+      queryClient.setQueryData(key, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          results: old.results.map((img: ImageAsset) =>
+            img.id === context?.tempId ? data : img,
+          ),
+        };
+      });
+    },
+    onError: (_err, _file, context) => {
+      if (context?.previous) queryClient.setQueryData(key, context.previous);
+    },
   });
 
   const reorder = useMutation({

@@ -34,34 +34,44 @@ function Thumb({
   onDeleteClick: (id: number) => void;
 }) {
   const router = useRouter();
+  const isUploading = image.id < 0;
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: image.id });
+    useSortable({ id: image.id, disabled: isUploading });
 
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       {...attributes}
-      {...listeners}
+      {...(isUploading ? {} : listeners)}
       className="relative shrink-0 snap-start"
     >
       <img
         src={image.file}
-        onClick={() => router.push(`/annotate/${image.id}`)}
+        onClick={() => !isUploading && router.push(`/annotate/${image.id}`)}
         className={cn(
-          "h-25 w-25 cursor-pointer rounded-md border-2 object-cover",
+          "h-25 w-25 rounded-md border-2 object-cover",
+          isUploading ? "opacity-50" : "cursor-pointer",
           active ? "border-primary" : "border-transparent",
         )}
       />
 
-      <button
-        onPointerDownCapture={(e) => e.stopPropagation()}
-        onClick={() => onDeleteClick(image.id)}
-        aria-label="Remove image"
-        className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-red-600/90 text-white shadow-md transition hover:bg-red-700"
-      >
-        <Trash2 className="size-2" strokeWidth={1.5} />
-      </button>
+      {isUploading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner className="size-5 text-white" />
+        </div>
+      )}
+
+      {!isUploading && (
+        <button
+          onPointerDownCapture={(e) => e.stopPropagation()}
+          onClick={() => onDeleteClick(image.id)}
+          aria-label="Remove image"
+          className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-red-600/90 text-white shadow-md transition hover:bg-red-700"
+        >
+          <Trash2 className="size-2" strokeWidth={1.5} />
+        </button>
+      )}
     </div>
   );
 }
