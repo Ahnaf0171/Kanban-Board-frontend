@@ -43,7 +43,27 @@ export function useTasks(dueDate?: string | null) {
   const reorder = useMutation({
     mutationFn: ({ id, data }: { id: number; data: ReorderTaskInput }) =>
       tasksService.reorder(id, data),
-    onSuccess: invalidate,
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<PaginatedResponse<Task>>(key);
+
+      queryClient.setQueryData<PaginatedResponse<Task>>(key, (old) =>
+        old
+          ? {
+              ...old,
+              results: old.results.map((t) =>
+                t.id === id ? { ...t, ...data } : t,
+              ),
+            }
+          : old,
+      );
+
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(key, context.previous);
+    },
+    onSettled: invalidate,
   });
 
   const remove = useMutation({

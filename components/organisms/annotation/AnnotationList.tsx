@@ -63,7 +63,12 @@ export function AnnotationList({ imageId }: { imageId: number }) {
         isLoading={remove.isPending}
         onConfirm={() =>
           deleteId &&
-          remove.mutate(deleteId, { onSuccess: () => setDeleteId(null) })
+          remove.mutate(deleteId, {
+            onSuccess: () => {
+              if (selectedAnnotationId === deleteId) selectAnnotation(null);
+              setDeleteId(null);
+            },
+          })
         }
       />
     </>

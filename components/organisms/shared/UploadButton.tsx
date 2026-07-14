@@ -1,22 +1,35 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import { Button } from "@/components/atoms/Button";
-import { ACCEPTED_IMAGE_TYPES } from "@/lib/config";
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_MB } from "@/lib/config";
+import { error } from "console";
 
 export function UploadButton() {
   const { upload } = useImages();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    Array.from(e.target.files ?? []).forEach((file) => upload.mutate(file));
+    const maxBytes = MAX_IMAGE_SIZE_MB * 1024 * 1024;
+    const files = Array.from(e.target.files ?? []);
+    const oversized = files.filter((f) => f.size > maxBytes);
+
+    setError(
+      oversized.length
+        ? `${oversized.length} file(s) exceed ${MAX_IMAGE_SIZE_MB}MB and were skipped`
+        : "",
+    );
+    files
+      .filter((f) => f.size <= maxBytes)
+      .forEach((file) => upload.mutate(file));
     e.target.value = "";
   };
 
   return (
-    <>
+    <div className="flex flex-col items-end gap-1">
       <input
         ref={inputRef}
         type="file"
@@ -34,6 +47,7 @@ export function UploadButton() {
         <Upload className="size-4" />
         Upload
       </Button>
-    </>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
   );
 }

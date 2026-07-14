@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { LIST_FETCH_SIZE } from "@/lib/constants";
 import type {
   Task,
   CreateTaskInput,
@@ -9,7 +10,10 @@ import type { PaginatedResponse } from "@/types/common";
 
 export const tasksService = {
   list: (dueDate?: string) =>
-    api.get<PaginatedResponse<Task>>("/tasks/", { due_date: dueDate }),
+    api.get<PaginatedResponse<Task>>("/tasks/", {
+      due_date: dueDate,
+      page_size: LIST_FETCH_SIZE,
+    }),
   create: (data: CreateTaskInput) => api.post<Task>("/tasks/", data),
   update: (id: number, data: UpdateTaskInput) =>
     api.patch<Task>(`/tasks/${id}/`, data),

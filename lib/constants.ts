@@ -37,3 +37,5 @@ export const MIN_POLYGON_POINTS = 3;
 export const DEFAULT_ANNOTATION_COLOR = "#FF0000";
 
 export const DEFAULT_PAGE_SIZE = 20;
+
+export const LIST_FETCH_SIZE = 100;

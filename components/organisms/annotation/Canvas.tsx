@@ -1,24 +1,26 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { CanvasSkeleton } from "@/components/atoms/CanvasSkeleton";
 import { ErrorBoundary } from "@/components/molecules/ErrorBoundary";
 import { CanvasStage } from "@/components/organisms/annotation/CanvasStage";
+import { useAnnotationUIStore } from "@/store/annotationUIStore";
 
 const ZOOM_STEP = 0.25;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 3;
 
 export function Canvas({ imageId }: { imageId: number }) {
-  const [prevImageId, setPrevImageId] = useState(imageId);
   const [zoom, setZoom] = useState(MIN_ZOOM);
+  const setActiveImage = useAnnotationUIStore((s) => s.setActiveImage);
 
-  if (imageId !== prevImageId) {
-    setPrevImageId(imageId);
+  useEffect(() => {
+    setActiveImage(imageId);
     setZoom(MIN_ZOOM);
-  }
+    return () => setActiveImage(null);
+  }, [imageId, setActiveImage]);
 
   return (
     <div className="space-y-2">
