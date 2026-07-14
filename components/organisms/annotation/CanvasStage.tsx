@@ -18,15 +18,12 @@ export function CanvasStage({
   imageId: number;
   zoom: number;
 }) {
-  // Suspense-driven — resolves before this line ever runs; no isLoading check.
   const { data: image } = useImage(imageId);
   const [el] = useImg(image.file);
   const { draftPoints, addDraftPoint, selectedAnnotationId, selectAnnotation } =
     useAnnotationUIStore();
   const stageRef = useRef(null);
 
-  // use-image's own async decode isn't Suspense-aware — this is the only
-  // remaining loading branch, and it's scoped to the stage, not the shell.
   if (!el) return <CanvasSkeleton />;
 
   const coverScale = Math.max(
@@ -56,7 +53,7 @@ export function CanvasStage({
   };
 
   return (
-    <div className="h-115 w-115 overflow-hidden rounded-xl border-4 border-slate-300 bg-slate-50">
+    <div className="h-115 w-115 overflow-hidden rounded-xl border-4 border-slate-500 bg-slate-50">
       <Stage
         width={WINDOW_SIZE}
         height={WINDOW_SIZE}

@@ -49,7 +49,7 @@ export function ConfirmDialog({
           aria-label="Close"
           className="absolute right-4 top-4 rounded-full p-1 text-muted-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
         >
-          <X className="size-4" />
+          <X className="size-5" />
         </button>
 
         <div className="flex flex-col items-center gap-3 pt-2 pb-1 text-center">

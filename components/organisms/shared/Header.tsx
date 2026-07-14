@@ -31,12 +31,10 @@ export async function Header({ user }: HeaderProps) {
       ) : (
         <div className="flex items-center gap-3">
           <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
+            <Button size="lg">Log in</Button>
           </Link>
           <Link href="/registration">
-            <Button size="sm">Get started</Button>
+            <Button size="lg">Get started</Button>
           </Link>
         </div>
       )}

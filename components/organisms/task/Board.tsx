@@ -70,11 +70,7 @@ export function Board() {
   return (
     <>
       <div className="flex justify-start pb-2">
-        <Button
-          size="lg"
-          onClick={() => setEditingTask(null)}
-          className="rounded-full bg-amber-500 px-3 font-bold text-white hover:bg-amber-600"
-        >
+        <Button size="lg" onClick={() => setEditingTask(null)}>
           <Plus className=" size-4" />
           Create Task
         </Button>

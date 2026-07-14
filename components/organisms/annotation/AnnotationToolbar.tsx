@@ -63,7 +63,7 @@ export function AnnotationToolbar({ imageId }: { imageId: number }) {
       </span>
 
       <Button
-        size="sm"
+        size="lg"
         onClick={handleSave}
         disabled={!hasEnoughPoints || create.isPending}
         className="rounded-md bg-amber-700 text-white hover:bg-amber-800 disabled:bg-amber-700/50"
@@ -72,7 +72,7 @@ export function AnnotationToolbar({ imageId }: { imageId: number }) {
       </Button>
 
       <Button
-        size="sm"
+        size="lg"
         variant="ghost"
         onClick={resetDraft}
         disabled={draftPoints.length === 0}

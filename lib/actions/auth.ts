@@ -7,6 +7,8 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "@/lib/config";
+import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { getErrorMessage } from "@/lib/utils";
 import type {
   LoginRequest,
   AuthTokens,
@@ -22,50 +24,32 @@ const cookieOpts = {
   path: "/",
 };
 
-async function fetchWithRetry(
-  url: string,
-  options: RequestInit,
-  retries = 5,
-  delayMs = 3000,
-): Promise<Response> {
-  try {
-    return await fetch(url, options);
-  } catch (err) {
-    if (retries > 0) {
-      console.warn(
-        `fetch failed, retrying in ${delayMs}ms... (${retries} attempts left)`,
-        err instanceof Error ? (err.cause ?? err.message) : err,
-      );
-      await new Promise((r) => setTimeout(r, delayMs));
-      return fetchWithRetry(url, options, retries - 1, delayMs);
-    }
-    throw err;
-  }
-}
-
 export async function loginAction(
   data: LoginRequest,
 ): Promise<{ error?: string }> {
-  const res = await fetch(`${API_BASE_URL}/api/auth/login/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    signal: AbortSignal.timeout(45_000),
-  });
+  try {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/api/auth/login/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  const body = await res.json();
+    const body = await res.json();
 
-  if (!res.ok) {
-    const err = body as ApiErrorResponse;
-    return { error: err.error?.message ?? "Invalid email or password" };
+    if (!res.ok) {
+      const err = body as ApiErrorResponse;
+      return { error: err.error?.message ?? "Invalid email or password" };
+    }
+
+    const { access, refresh } = body as AuthTokens;
+    const store = await cookies();
+    store.set(ACCESS_TOKEN_COOKIE, access, cookieOpts);
+    store.set(REFRESH_TOKEN_COOKIE, refresh, cookieOpts);
+
+    return {};
+  } catch (err) {
+    return { error: getErrorMessage(err) };
   }
-
-  const { access, refresh } = body as AuthTokens;
-  const store = await cookies();
-  store.set(ACCESS_TOKEN_COOKIE, access, cookieOpts);
-  store.set(REFRESH_TOKEN_COOKIE, refresh, cookieOpts);
-
-  return {};
 }
 
 export async function logoutAction() {
@@ -78,29 +62,36 @@ export async function logoutAction() {
 export async function registerAction(
   data: RegisterRequest,
 ): Promise<{ error?: string }> {
-  const res = await fetch(`${API_BASE_URL}/api/auth/register/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    signal: AbortSignal.timeout(45_000),
-  });
+  try {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/api/auth/register/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  if (!res.ok) {
-    const err = await res.json();
-    return { error: err.error?.message ?? "Registration failed" };
+    if (!res.ok) {
+      const err = await res.json();
+      return { error: err.error?.message ?? "Registration failed" };
+    }
+
+    return loginAction({ email: data.email, password: data.password });
+  } catch (err) {
+    return { error: getErrorMessage(err) };
   }
-
-  return loginAction({ email: data.email, password: data.password });
 }
 
 export async function getCurrentUser(): Promise<User | null> {
   const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
   if (!token) return null;
 
-  const res = await fetch(`${API_BASE_URL}/api/auth/me/`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/api/auth/me/`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }

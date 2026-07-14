@@ -24,7 +24,7 @@ export function ImageNavButtons({ currentId }: { currentId: number }) {
         disabled={!prev}
         onClick={() => prev && router.push(`/annotate/${prev.id}`)}
       >
-        <ChevronLeft className="size-4" /> Previous
+        <ChevronLeft className="size-5" /> Previous
       </Button>
       <span className="text-xs text-muted-foreground">
         {index + 1} / {images.length}
@@ -35,7 +35,7 @@ export function ImageNavButtons({ currentId }: { currentId: number }) {
         disabled={!next}
         onClick={() => next && router.push(`/annotate/${next.id}`)}
       >
-        Next <ChevronRight className="size-4" />
+        Next <ChevronRight className="size-5" />
       </Button>
     </div>
   );

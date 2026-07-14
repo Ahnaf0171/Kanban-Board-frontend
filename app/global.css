@@ -14,6 +14,13 @@
   --color-signal-ink: #1e3fc4;
   --color-signal-soft: #eaefff;
 
+  --color-primary: #4f46e5;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #6b7280;
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #10b981;
+  --color-accent-foreground: #ffffff;
+
   --color-moss: #1f9d6c;
   --color-moss-soft: #e6f6ee;
   --color-amber: #d98c1f;
@@ -77,6 +84,6 @@
   *::before,
   *::after {
     animation-duration: 0.01ms;
-    transition-duration: 0.01ms ;
+    transition-duration: 0.01ms;
   }
 }

@@ -21,7 +21,9 @@ export function HeaderNav() {
           href={link.href}
           className={cn(
             "text-sm transition-colors hover:text-ink",
-            pathname === link.href ? "font-medium text-ink" : "text-ink-muted",
+            pathname === link.href
+              ? "font-bold text-blue-600"
+              : "text-ink-muted",
           )}
         >
           {link.label}

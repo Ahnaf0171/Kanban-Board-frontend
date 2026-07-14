@@ -30,25 +30,25 @@ export function Canvas({ imageId }: { imageId: number }) {
 
       <div className="flex items-center justify-center gap-2">
         <Button
-          variant="outline"
+          variant="accent"
           size="icon-sm"
           disabled={zoom <= MIN_ZOOM}
           onClick={() => setZoom((z) => Math.max(MIN_ZOOM, z - ZOOM_STEP))}
           aria-label="Zoom out"
         >
-          <ZoomOut className="size-4" />
+          <ZoomOut className="size-5" />
         </Button>
         <span className="text-xs text-muted-foreground">
           {Math.round(zoom * 100)}%
         </span>
         <Button
-          variant="outline"
+          variant="accent"
           size="icon-sm"
           disabled={zoom >= MAX_ZOOM}
           onClick={() => setZoom((z) => Math.min(MAX_ZOOM, z + ZOOM_STEP))}
           aria-label="Zoom in"
         >
-          <ZoomIn className="size-4" />
+          <ZoomIn className="size-5" />
         </Button>
       </div>
     </div>

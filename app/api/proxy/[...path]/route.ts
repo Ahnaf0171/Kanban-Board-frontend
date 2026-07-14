@@ -4,6 +4,9 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from "@/lib/config";
+import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+
+export const maxDuration = 60;
 
 const METHODS = ["GET", "POST", "PATCH", "DELETE"] as const;
 type Method = (typeof METHODS)[number];
@@ -20,7 +23,7 @@ async function forward(
   const hasBody = method === "POST" || method === "PATCH";
   const body = hasBody ? await req.arrayBuffer() : undefined;
 
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     method,
     headers: {
       ...(contentType ? { "Content-Type": contentType } : {}),
@@ -30,27 +33,17 @@ async function forward(
   });
 }
 
-let refreshPromise: Promise<{ access: string; refresh: string } | null> | null =
-  null;
-
 async function refreshAccessToken(refreshToken: string) {
-  if (refreshPromise) return refreshPromise;
-
-  refreshPromise = (async () => {
-    const res = await fetch(`${API_BASE_URL}/api/auth/login/refresh/`, {
+  const res = await fetchWithTimeout(
+    `${API_BASE_URL}/api/auth/login/refresh/`,
+    {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh: refreshToken }),
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as { access: string; refresh: string };
-  })();
-
-  try {
-    return await refreshPromise;
-  } finally {
-    refreshPromise = null;
-  }
+    },
+  );
+  if (!res.ok) return null;
+  return (await res.json()) as { access: string; refresh: string };
 }
 
 function withAuthCookies(res: NextResponse, access: string, refresh: string) {
@@ -71,6 +64,19 @@ async function toNextResponse(upstream: Response) {
   return NextResponse.json(data, { status: upstream.status });
 }
 
+function serviceUnavailable() {
+  return NextResponse.json(
+    {
+      success: false,
+      error: {
+        message:
+          "The server is taking longer than usual to respond. Please try again in a moment.",
+      },
+    },
+    { status: 503 },
+  );
+}
+
 async function handler(
   req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -80,18 +86,22 @@ async function handler(
   const accessToken = req.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = req.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
 
-  let upstream = await forward(req, method, path, accessToken);
+  try {
+    let upstream = await forward(req, method, path, accessToken);
 
-  if (upstream.status === 401 && refreshToken) {
-    const rotated = await refreshAccessToken(refreshToken);
-    if (!rotated) return new NextResponse(null, { status: 401 });
+    if (upstream.status === 401 && refreshToken) {
+      const rotated = await refreshAccessToken(refreshToken);
+      if (!rotated) return new NextResponse(null, { status: 401 });
 
-    upstream = await forward(req, method, path, rotated.access);
-    const res = await toNextResponse(upstream);
-    return withAuthCookies(res, rotated.access, rotated.refresh);
+      upstream = await forward(req, method, path, rotated.access);
+      const res = await toNextResponse(upstream);
+      return withAuthCookies(res, rotated.access, rotated.refresh);
+    }
+
+    return toNextResponse(upstream);
+  } catch {
+    return serviceUnavailable();
   }
-
-  return toNextResponse(upstream);
 }
 
 export const GET = handler;

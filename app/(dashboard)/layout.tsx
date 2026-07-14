@@ -1,23 +1,17 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { API_BASE_URL, ACCESS_TOKEN_COOKIE } from "@/lib/config";
+import { getCurrentUser } from "@/lib/actions/auth";
 import { Sidebar } from "@/components/organisms/shared/Sidebar";
 import { Header } from "@/components/organisms/shared/Header";
+
+export const maxDuration = 60;
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
-  if (!token) redirect("/login");
-
-  const res = await fetch(`${API_BASE_URL}/api/auth/me/`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (!res.ok) redirect("/login");
-  const user = await res.json();
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
 
   return (
     <div className="flex h-screen">
