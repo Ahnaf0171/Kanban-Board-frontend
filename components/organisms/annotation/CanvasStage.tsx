@@ -19,12 +19,12 @@ export function CanvasStage({
   zoom: number;
 }) {
   const { data: image } = useImage(imageId);
-  const [el] = useImg(image.file);
+  const [el] = useImg(image?.file ?? "");
   const { draftPoints, addDraftPoint, selectedAnnotationId, selectAnnotation } =
     useAnnotationUIStore();
   const stageRef = useRef(null);
 
-  if (!el) return <CanvasSkeleton />;
+  if (!image || !el) return <CanvasSkeleton />;
 
   const coverScale = Math.max(
     WINDOW_SIZE / el.naturalWidth,
@@ -70,7 +70,7 @@ export function CanvasStage({
             height={drawHeight}
           />
 
-          {image.annotations.map((a) => (
+          {(image.annotations ?? []).map((a) => (
             <Line
               key={a.id}
               points={a.points.flatMap(toScreenCoords)}

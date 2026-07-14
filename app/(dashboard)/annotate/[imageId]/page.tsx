@@ -19,7 +19,7 @@ export default async function ImageAnnotatePage({
     <div className="space-y-4">
       <Link
         href="/annotate"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex p-1.5 items-center gap-1.5 rounded-xl bg-amber-500 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" /> Back to gallery
       </Link>

@@ -15,6 +15,8 @@ export function useTasks(dueDate?: string | null) {
   const query = useQuery({
     queryKey: key,
     queryFn: () => tasksService.list(dueDate ?? undefined),
+    staleTime: 0,
+    enabled: typeof window !== "undefined",
   });
 
   const invalidate = () =>

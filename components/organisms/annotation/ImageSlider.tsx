@@ -67,9 +67,9 @@ function Thumb({
           onPointerDownCapture={(e) => e.stopPropagation()}
           onClick={() => onDeleteClick(image.id)}
           aria-label="Remove image"
-          className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-red-600/90 text-white shadow-md transition hover:bg-red-700 cursor-pointer"
+          className="absolute top-0.5 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-600/90 text-white shadow-md transition hover:bg-red-700 cursor-pointer"
         >
-          <Trash2 className="size-2.5" strokeWidth={2} />
+          <Trash2 className="size-3.5" strokeWidth={3} />
         </button>
       )}
     </div>

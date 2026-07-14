@@ -19,23 +19,23 @@ export function ImageNavButtons({ currentId }: { currentId: number }) {
   return (
     <div className="flex items-center justify-center gap-3">
       <Button
-        variant="outline"
+        variant="secondary"
         size="sm"
         disabled={!prev}
         onClick={() => prev && router.push(`/annotate/${prev.id}`)}
       >
-        <ChevronLeft className="size-5" /> Previous
+        <ChevronLeft className="size-4" /> Previous
       </Button>
       <span className="text-xs text-muted-foreground">
         {index + 1} / {images.length}
       </span>
       <Button
-        variant="outline"
+        variant="secondary"
         size="sm"
         disabled={!next}
         onClick={() => next && router.push(`/annotate/${next.id}`)}
       >
-        Next <ChevronRight className="size-5" />
+        Next <ChevronRight className="size-4" />
       </Button>
     </div>
   );

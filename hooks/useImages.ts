@@ -1,54 +1,56 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { imagesService } from "@/lib/services/images";
 import type { ImageAsset, ReorderImageInput } from "@/types/annotation";
-import { PaginatedResponse } from "@/types/common";
+import type { PaginatedResponse } from "@/types/common";
 
-let tempIdCounter = 0;
+let tempId = -1;
 
 export function useImages() {
   const queryClient = useQueryClient();
   const key = ["images"] as const;
 
-  const query = useQuery({ queryKey: key, queryFn: imagesService.list });
+  const query = useQuery({
+    queryKey: key,
+    queryFn: imagesService.list,
+    enabled: typeof window !== "undefined",
+  });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: key });
 
   const upload = useMutation({
     mutationFn: (file: File) => imagesService.upload(file),
-    onMutate: async (file: File) => {
+    onMutate: async (file) => {
       await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData(key);
-      const tempId = -++tempIdCounter;
+      const previous =
+        queryClient.getQueryData<PaginatedResponse<ImageAsset>>(key);
 
-      queryClient.setQueryData(key, (old: any) => {
-        if (!old) return old;
-        const tempImage = {
-          id: tempId,
-          file: URL.createObjectURL(file),
-        } as ImageAsset;
-        return { ...old, results: [...old.results, tempImage] };
-      });
+      const placeholder: ImageAsset = {
+        id: tempId--,
+        file: URL.createObjectURL(file),
+        order: previous?.results.length ?? 0,
+        uploaded_by: 0,
+        uploaded_at: new Date().toISOString(),
+        annotations: [],
+      };
 
-      return { previous, tempId };
-    },
-    onSuccess: (data, _file, context) => {
-      queryClient.setQueryData(key, (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          results: old.results.map((img: ImageAsset) =>
-            img.id === context?.tempId ? data : img,
-          ),
-        };
-      });
+      queryClient.setQueryData<PaginatedResponse<ImageAsset>>(key, (old) =>
+        old
+          ? {
+              ...old,
+              results: [...old.results, placeholder],
+              count: old.count + 1,
+            }
+          : { count: 1, next: null, previous: null, results: [placeholder] },
+      );
+
+      return { previous, objectUrl: placeholder.file };
     },
     onError: (_err, _file, context) => {
       if (context?.previous) queryClient.setQueryData(key, context.previous);
+    },
+    onSettled: (_data, _err, _file, context) => {
+      if (context?.objectUrl) URL.revokeObjectURL(context.objectUrl);
+      invalidate();
     },
   });
 
@@ -66,14 +68,10 @@ export function useImages() {
   return { ...query, upload, reorder, remove };
 }
 
-export function useImage(id: number) {
-  const queryClient = useQueryClient();
-  return useSuspenseQuery({
+export function useImage(id: number | null) {
+  return useQuery({
     queryKey: ["images", id],
-    queryFn: () => imagesService.retrieve(id),
-    initialData: () =>
-      queryClient
-        .getQueryData<PaginatedResponse<ImageAsset>>(["images"])
-        ?.results.find((img) => img.id === id),
+    queryFn: () => imagesService.retrieve(id as number),
+    enabled: id !== null && typeof window !== "undefined",
   });
 }
