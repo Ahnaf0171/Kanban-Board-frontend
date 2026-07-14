@@ -12,12 +12,12 @@ import { useTasks } from "@/hooks/useTasks";
 import { useTaskUIStore } from "@/store/taskUIStore";
 import { Modal } from "@/components/molecules/Modal";
 import { FormField } from "@/components/molecules/FormField";
+import { TagMultiSelect } from "@/components/molecules/TagMultiSelect";
 import { Button } from "@/components/atoms/Button";
 import { Select } from "@/components/atoms/Select";
 import { TASK_STATUS_ORDER, TASK_PRIORITY } from "@/lib/constants";
-import { getErrorMessage } from "@/lib/utils";
+import { getErrorMessage, todayISODate } from "@/lib/utils";
 import type { Task } from "@/types/task";
-import { todayISODate } from "@/lib/utils";
 
 export function TaskModal({
   task,
@@ -38,11 +38,21 @@ export function TaskModal({
     formState: { errors, isSubmitting },
   } = useForm<TaskFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: task ?? {
-      status: "todo",
-      priority: "medium",
-      due_date: selectedDate ?? todayISODate(),
-    },
+    defaultValues: task
+      ? {
+          title: task.title,
+          description: task.description,
+          status: task.status,
+          priority: task.priority,
+          due_date: task.due_date,
+          tags: task.tags_display.map((t) => String(t.id)),
+        }
+      : {
+          status: "todo",
+          priority: "medium",
+          due_date: selectedDate ?? todayISODate(),
+          tags: [],
+        },
   });
 
   const onSubmit = async (formValues: TaskFormValues) => {
@@ -113,6 +123,20 @@ export function TaskModal({
                   label: p,
                 }))}
                 error={errors.priority?.message}
+              />
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-foreground">Tags</span>
+          <Controller
+            name="tags"
+            control={control}
+            render={({ field }) => (
+              <TagMultiSelect
+                value={field.value ?? []}
+                onChange={field.onChange}
               />
             )}
           />

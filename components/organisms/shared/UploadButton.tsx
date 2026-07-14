@@ -5,7 +5,6 @@ import { Upload } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import { Button } from "@/components/atoms/Button";
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_MB } from "@/lib/config";
-import { error } from "console";
 
 export function UploadButton() {
   const { upload } = useImages();

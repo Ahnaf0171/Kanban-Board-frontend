@@ -55,7 +55,11 @@ export function Board() {
 
     const siblings = byStatus(targetStatus).filter((t) => t.id !== task.id);
     const overIndex = siblings.findIndex((t) => t.id === over.id);
-    const order = overIndex === -1 ? siblings.length : overIndex;
+    const insertAt = overIndex === -1 ? siblings.length : overIndex;
+
+    const prevOrder = siblings[insertAt - 1]?.order ?? 0;
+    const nextOrder = siblings[insertAt]?.order ?? prevOrder + 2;
+    const order = (prevOrder + nextOrder) / 2;
 
     reorder.mutate({ id: task.id, data: { status: targetStatus, order } });
   };

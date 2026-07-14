@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_TOKEN_COOKIE } from "@/lib/config";
+import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/config";
 
 const PUBLIC_PATHS = [
   "/login",
@@ -14,15 +14,32 @@ function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 }
 
+function isExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString(),
+    );
+    return typeof payload.exp === "number" && payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export function proxy(req: NextRequest) {
-  const hasToken = req.cookies.has(ACCESS_TOKEN_COOKIE);
+  const token = req.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
+  const hasValidToken = !!token && !isExpired(token);
   const publicRoute = isPublic(req.nextUrl.pathname);
 
-  if (!hasToken && !publicRoute) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (!hasValidToken && !publicRoute) {
+    const res = NextResponse.redirect(new URL("/login", req.url));
+    if (token) {
+      res.cookies.delete(ACCESS_TOKEN_COOKIE);
+      res.cookies.delete(REFRESH_TOKEN_COOKIE);
+    }
+    return res;
   }
   if (
-    hasToken &&
+    hasValidToken &&
     (req.nextUrl.pathname === "/login" ||
       req.nextUrl.pathname === "/registration")
   ) {
